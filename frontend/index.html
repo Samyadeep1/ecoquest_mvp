@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EcoQuest 🌱</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <!-- Auth Section -->
+  <div id="auth" class="card">
+    <h2>Login</h2>
+    <input type="text" id="login-username" placeholder="Username">
+    <input type="password" id="login-password" placeholder="Password">
+    <button id="login-btn">Login</button>
+
+    <h2>Register</h2>
+    <input type="text" id="register-username" placeholder="Username">
+    <input type="password" id="register-password" placeholder="Password">
+    <button id="register-btn">Register</button>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <div id="admin-dashboard" class="card" style="display:none;">
+    <button class="logout-btn" data-role="admin">Logout</button>
+    <h1>Admin Portal 🌿</h1>
+    <h3 id="admin-welcome"></h3>
+
+    <div id="admin-badge">🌟 Admin Access</div>
+
+    <h2>Create Challenge</h2>
+    <input type="text" id="challenge-title" placeholder="Title">
+    <textarea id="challenge-desc" placeholder="Description"></textarea>
+    <input type="number" id="challenge-points" placeholder="Points">
+    <button id="create-challenge-btn">Create Challenge</button>
+
+    <h2>All Challenges</h2>
+    <div id="challenge-list"></div>
+  </div>
+
+  <!-- Student Dashboard -->
+  <div id="student-dashboard" class="card" style="display:none;">
+    <button class="logout-btn" data-role="student">Logout</button>
+    <h1>Student Portal 🌎</h1>
+    <h3 id="student-welcome"></h3>
+
+    <div class="tabs">
+      <button onclick="showTab('challenges')">Challenges</button>
+      <button onclick="showTab('submit')">Submit Proof</button>
+      <button onclick="showTab('leaderboard')">Leaderboard</button>
+    </div>
+
+    <div id="progress-container" class="card">
+      <h4>Your Eco-Points Progress</h4>
+      <div id="progress-bar-bg">
+        <div id="progress-bar-fill">0 pts</div>
+      </div>
+      <div id="badge-display"></div>
+    </div>
+
+    <div id="challenges-tab">
+      <h2>Challenges</h2>
+      <div id="student-challenges"></div>
+    </div>
+
+    <div id="submit-tab" style="display:none">
+      <h2>Submit Proof</h2>
+      <select id="proof-challenge-id"></select>
+      <input type="text" id="proof-text" placeholder="Proof text">
+      <button id="submit-proof-btn">Submit Proof</button>
+    </div>
+
+    <div id="leaderboard-tab" style="display:none">
+      <h2>Leaderboard</h2>
+      <div id="leaderboard"></div>
+    </div>
+  </div>
+
+  <!-- Attach app.js -->
+  <script src="/static/app.js"></script>
+
+  <!-- Connect buttons to JS -->
+  <script>
+    document.getElementById("login-btn").onclick = async () => {
+      const username = document.getElementById("login-username").value;
+      const password = document.getElementById("login-password").value;
+      await login(username, password);
+    };
+
+    document.getElementById("register-btn").onclick = async () => {
+      const username = document.getElementById("register-username").value;
+      const password = document.getElementById("register-password").value;
+      await register(username, password);
+    };
+
+    document.getElementById("create-challenge-btn").onclick = async () => {
+      const title = document.getElementById("challenge-title").value;
+      const desc = document.getElementById("challenge-desc").value;
+      const points = document.getElementById("challenge-points").value;
+      await createChallenge(title, desc, points);
+    };
+
+    document.getElementById("submit-proof-btn").onclick = async () => {
+      const challengeId = document.getElementById("proof-challenge-id").value;
+      const proofText = document.getElementById("proof-text").value;
+      await submitProof(challengeId, proofText);
+    };
+  </script>
+</body>
+</html>
