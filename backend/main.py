@@ -8,6 +8,7 @@ from passlib.context import CryptContext
 from jose import jwt, JWTError
 from datetime import datetime, timedelta
 from pydantic import BaseModel
+from pathlib import Path
 import os
 
 # -------------------
@@ -107,18 +108,25 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# -------------------
 # Serve frontend
-this_dir = os.path.dirname(__file__)
-frontend_path = os.path.normpath(os.path.join(this_dir, "..", "frontend"))
-static_path = os.path.join(frontend_path, "static")
-app.mount("/static", StaticFiles(directory=static_path), name="static")
+# -------------------
+# Compute path from backend/main.py to repo root/frontend
+BASE_DIR = Path(__file__).resolve().parent.parent
+FRONTEND_DIR = BASE_DIR / "frontend"
+STATIC_DIR = FRONTEND_DIR / "static"
+
+if not STATIC_DIR.exists():
+    raise RuntimeError(f"Static directory not found at {STATIC_DIR}")
+
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 @app.get("/")
 def serve_index():
-    index_path = os.path.join(frontend_path, "index.html")
-    if not os.path.exists(index_path):
+    index_file = FRONTEND_DIR / "index.html"
+    if not index_file.exists():
         raise HTTPException(status_code=500, detail="index.html not found")
-    return FileResponse(index_path)
+    return FileResponse(index_file)
 
 # -------------------
 # UTILS
@@ -230,4 +238,4 @@ def leaderboard(db: Session = Depends(get_db)):
 # -------------------
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("backend.main:app", host="0.0.0.0", port=8000)
